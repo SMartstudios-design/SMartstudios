@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMart — Online aanwezigheid voor ondernemers</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{
+    --ink:#06101f;
+    --ink-2:#0d1a30;
+    --slate:#3a4658;
+    --muted:#6b7689;
+    --bg:#ffffff;
+    --soft:#f5f7fa;
+    --softer:#fafbfd;
+    --line:#dde3ec;
+    --brand:#1e4d8c;
+    --brand-2:#0f3a73;
+    --brand-3:#2b6cb0;
+    --brand-soft:#e8eef7;
+    --accent:#0f9b6e;
+    --warn:#d99021;
+    --grad:linear-gradient(135deg,#0f3a73 0%,#1e4d8c 50%,#2b6cb0 100%);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;color:var(--ink);line-height:1.65;background:var(--bg);overflow-x:hidden;}
+  h1,h2,h3,h4{font-family:'Fraunces',serif;letter-spacing:-.02em;line-height:1.05;font-weight:600;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 26px;}
+  a{text-decoration:none;color:inherit;}
+  .placeholder{color:var(--warn);border-bottom:1px dashed var(--warn);cursor:help;}
+
+  .demo-banner{background:#fff4dc;color:#6a4a10;text-align:center;font-size:.82rem;padding:8px 14px;border-bottom:1px solid #f1d894;position:relative;z-index:60;}
+
+  /* HEADER */
+  header{background:rgba(255,255,255,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(227,231,236,.6);position:sticky;top:0;z-index:50;}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 26px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:12px;}
+  .logo .mark{width:42px;height:42px;background:var(--grad);border-radius:11px;display:grid;place-items:center;color:#fff;font-family:'Fraunces';font-weight:700;font-size:1.25rem;box-shadow:0 6px 22px rgba(45,108,223,.35);position:relative;overflow:hidden;}
+  .logo .mark::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.5),transparent 60%);}
+  .logo b{font-family:'Fraunces';font-size:1.5rem;font-weight:600;display:block;line-height:1;color:var(--ink);letter-spacing:-.02em;}
+  .logo small{font-size:.7rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;display:block;}
+  nav ul{display:flex;gap:32px;list-style:none;align-items:center;}
+  nav a{color:var(--slate);font-weight:500;font-size:.95rem;transition:.2s;}
+  nav a:hover{color:var(--brand);}
+  .nav-cta{background:var(--ink);color:#fff!important;padding:10px 20px;border-radius:9px;font-weight:600;display:inline-flex;align-items:center;gap:7px;}
+  .nav-cta:hover{background:var(--brand);transform:translateY(-1px);}
+  .nav-cta::after{content:"→";transition:.2s;}
+  .nav-cta:hover::after{transform:translateX(3px);}
+  @media(max-width:840px){nav ul{display:none;}}
+
+  /* HERO */
+  .hero{padding:100px 0 110px;position:relative;overflow:hidden;background:#fff;}
+  .hero-blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.45;pointer-events:none;z-index:0;animation:float 18s ease-in-out infinite;}
+  .blob1{width:520px;height:520px;background:#1e4d8c;top:-180px;right:-100px;}
+  .blob2{width:420px;height:420px;background:#2b6cb0;top:120px;left:-150px;animation-delay:-6s;}
+  .blob3{width:340px;height:340px;background:#0f3a73;bottom:-100px;right:25%;animation-delay:-12s;opacity:.3;}
+  @keyframes float{
+    0%,100%{transform:translate(0,0) scale(1);}
+    33%{transform:translate(40px,-30px) scale(1.05);}
+    66%{transform:translate(-30px,40px) scale(.95);}
+  }
+  .hero-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");opacity:.04;pointer-events:none;z-index:1;}
+  .hero .wrap{position:relative;z-index:2;text-align:center;}
+  .hero .eyebrow{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.7);border:1px solid var(--line);padding:8px 16px;border-radius:30px;font-size:.85rem;color:var(--slate);font-weight:500;margin-bottom:30px;backdrop-filter:blur(6px);}
+  .hero .eyebrow .dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(26,185,135,.6);}50%{box-shadow:0 0 0 6px rgba(26,185,135,0);}}
+  .hero h1{font-size:clamp(3rem,7vw,5.5rem);max-width:16ch;margin:0 auto 24px;font-weight:600;letter-spacing:-.03em;}
+  .hero h1 .em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+  .hero p.lead{font-size:1.25rem;color:var(--slate);max-width:54ch;margin:0 auto 40px;}
+  .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .btn{font-weight:600;font-size:1rem;padding:14px 26px;border-radius:10px;display:inline-flex;align-items:center;gap:8px;transition:.25s;border:2px solid transparent;cursor:pointer;}
+  .btn-primary{background:var(--ink);color:#fff;box-shadow:0 8px 24px rgba(10,19,32,.18);}
+  .btn-primary:hover{background:var(--brand);transform:translateY(-2px);box-shadow:0 12px 32px rgba(45,108,223,.3);}
+  .btn-primary::after{content:"→";transition:.2s;}
+  .btn-primary:hover::after{transform:translateX(3px);}
+  .btn-ghost{border-color:var(--line);background:rgba(255,255,255,.6);color:var(--ink);backdrop-filter:blur(6px);}
+  .btn-ghost:hover{border-color:var(--brand);color:var(--brand);}
+  .hero-meta{margin-top:64px;display:flex;justify-content:center;gap:50px;flex-wrap:wrap;color:var(--muted);font-size:.86rem;letter-spacing:.04em;}
+  .hero-meta b{color:var(--ink);font-weight:600;font-family:'Fraunces';font-size:1.4rem;display:block;}
+
+  /* REVEAL ANIMATIONS */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* SECTIONS */
+  section{padding:100px 0;position:relative;}
+  .head{max-width:680px;margin:0 auto 64px;text-align:center;}
+  .head .eyebrow{display:inline-block;color:var(--brand);font-weight:600;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;padding:5px 12px;background:var(--brand-soft);border-radius:6px;}
+  .head h2{font-size:clamp(2.3rem,5vw,3.6rem);margin-top:18px;font-weight:600;letter-spacing:-.025em;}
+  .head h2 .em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+  .head p{color:var(--slate);margin-top:16px;font-size:1.1rem;}
+
+  /* SERVICES BENTO */
+  .services{background:var(--softer);}
+  .bento{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;}
+  .b-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:32px;transition:.3s;position:relative;overflow:hidden;}
+  .b-card:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(15,23,34,.07);border-color:rgba(45,108,223,.25);}
+  .b-card .tag{position:absolute;top:24px;right:24px;font-family:'JetBrains Mono';font-size:.7rem;color:var(--muted);letter-spacing:.05em;}
+  .b-card .ic{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;margin-bottom:18px;background:var(--brand-soft);}
+  .b-card .ic svg{width:24px;height:24px;stroke:var(--brand);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .b-card h3{font-size:1.55rem;margin-bottom:10px;}
+  .b-card p{color:var(--slate);font-size:.96rem;}
+  .b-card.dark{background:var(--ink);color:#fff;border:none;}
+  .b-card.dark::before{content:"";position:absolute;top:-60px;right:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(43,108,176,.45),transparent 70%);border-radius:50%;}
+  .b-card.dark h3{color:#fff;}
+  .b-card.dark p{color:#a8b3c4;}
+  .b-card.dark .ic{background:rgba(255,255,255,.08);}
+  .b-card.dark .ic svg{stroke:#fff;}
+  .b-card.dark .tag{color:rgba(255,255,255,.4);}
+  .b-card .pill{display:inline-block;margin-top:14px;font-size:.82rem;color:var(--brand);font-weight:600;}
+  .b-card .pill::after{content:" →";}
+  .b-1{grid-column:span 3;}
+  .b-2{grid-column:span 3;}
+  .b-3{grid-column:span 2;}
+  .b-4{grid-column:span 2;}
+  .b-5{grid-column:span 2;}
+  .b-6{grid-column:span 3;}
+  .b-7{grid-column:span 3;}
+  @media(max-width:840px){
+    .bento{grid-template-columns:1fr;}
+    .b-1,.b-2,.b-3,.b-4,.b-5,.b-6,.b-7{grid-column:span 1;}
+  }
+
+  /* APPROACH */
+  .approach .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative;}
+  .approach .timeline::before{content:"";position:absolute;top:30px;left:8%;right:8%;height:2px;background:linear-gradient(90deg,var(--brand-soft),var(--brand),var(--brand-soft));z-index:0;}
+  @media(max-width:780px){.approach .timeline{grid-template-columns:1fr;gap:30px;}.approach .timeline::before{display:none;}}
+  .step{position:relative;z-index:1;text-align:center;padding:0 14px;}
+  .step .circle{width:58px;height:58px;background:#fff;border:2px solid var(--brand);color:var(--brand);border-radius:50%;display:grid;place-items:center;font-family:'Fraunces';font-weight:700;font-size:1.3rem;margin:0 auto 18px;box-shadow:0 6px 18px rgba(45,108,223,.15);}
+  .step h4{font-size:1.35rem;margin-bottom:8px;}
+  .step p{color:var(--slate);font-size:.95rem;}
+
+  /* WHY */
+  .why{background:var(--ink);color:#fff;position:relative;overflow:hidden;}
+  .why::before{content:"";position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(43,108,176,.22),transparent 60%);pointer-events:none;}
+  .why .head h2{color:#fff;}
+  .why .head p{color:#a8b3c4;}
+  .why .head .eyebrow{background:rgba(43,108,176,.2);color:#8ab4e6;}
+  .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;position:relative;}
+  .why-item{padding:30px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;backdrop-filter:blur(8px);transition:.3s;}
+  .why-item:hover{background:rgba(255,255,255,.05);transform:translateY(-3px);}
+  .why-item .num{font-family:'JetBrains Mono';font-size:.78rem;color:rgba(255,255,255,.4);letter-spacing:.06em;margin-bottom:14px;}
+  .why-item h4{color:#fff;font-size:1.3rem;margin-bottom:10px;}
+  .why-item p{color:#a8b3c4;font-size:.95rem;}
+
+  /* CONTACT */
+  .contact-section{background:linear-gradient(180deg,#fff 0%,var(--softer) 100%);position:relative;overflow:hidden;}
+  .contact-section::before{content:"";position:absolute;top:-150px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(45,108,223,.08),transparent 60%);border-radius:50%;pointer-events:none;}
+  .c-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;}
+  @media(max-width:780px){.c-grid{grid-template-columns:1fr;gap:36px;}}
+  .c-grid h2{font-size:clamp(2.1rem,5vw,3.2rem);margin-bottom:16px;font-weight:600;letter-spacing:-.025em;}
+  .c-grid h2 .em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;}
+  .c-grid p.lead{color:var(--slate);font-size:1.1rem;margin-bottom:30px;}
+  .c-info{list-style:none;padding:0;}
+  .c-info li{display:flex;gap:14px;align-items:center;margin-bottom:18px;}
+  .c-info .ic{width:44px;height:44px;flex:none;background:var(--brand-soft);border-radius:11px;display:grid;place-items:center;color:var(--brand);font-size:1.1rem;}
+  .c-info small{display:block;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;font-weight:500;}
+  .c-info b{font-size:1.05rem;font-weight:600;}
+  .form{background:#fff;border:1px solid var(--line);border-radius:16px;padding:36px;box-shadow:0 20px 50px rgba(15,23,34,.06);}
+  .form label{display:block;font-size:.78rem;font-weight:600;color:var(--slate);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;}
+  .form input,.form textarea,.form select{width:100%;border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:18px;font-family:inherit;font-size:.96rem;color:var(--ink);background:#fff;transition:.2s;}
+  .form input:focus,.form textarea:focus,.form select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-soft);}
+  .form button{width:100%;background:var(--ink);color:#fff;border:none;padding:15px;border-radius:10px;font-weight:600;font-size:1rem;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;}
+  .form button::after{content:"→";transition:.2s;}
+  .form button:hover{background:var(--brand);}
+  .form button:hover::after{transform:translateX(3px);}
+
+  footer{background:var(--ink);color:#a8b3c4;padding:60px 0 30px;position:relative;overflow:hidden;}
+  footer::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(43,108,176,.5),transparent);}
+  footer .grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+  @media(max-width:680px){footer .grid{grid-template-columns:1fr;gap:24px;}}
+  footer h5{color:#fff;font-family:'Fraunces';font-size:1.1rem;margin-bottom:14px;font-weight:600;}
+  footer ul{list-style:none;padding:0;}
+  footer ul li{margin-bottom:8px;font-size:.92rem;}
+  footer ul a:hover{color:#fff;}
+  footer .bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;text-align:center;font-size:.85rem;}
+  footer .logo b{color:#fff;}
+  footer .logo small{color:#a8b3c4;}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">Voorbeeld-ontwerp van uw eigen SMart-website — teksten en contactgegevens nog naar wens aan te passen</div>
+
+<header>
+  <div class="nav">
+    <div class="logo">
+      <span class="mark">S</span>
+      <span><b>SMart</b><small>Online voor ondernemers</small></span>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#diensten">Diensten</a></li>
+        <li><a href="#aanpak">Aanpak</a></li>
+        <li><a href="#waarom">Waarom SMart</a></li>
+        <li><a href="#contact" class="nav-cta">Gesprek plannen</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-blob blob1"></div>
+  <div class="hero-blob blob2"></div>
+  <div class="hero-blob blob3"></div>
+  <div class="hero-grain"></div>
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span> Nieuwe klanten welkom · NL</span>
+    <h1>Online aanwezigheid die <span class="em">werkt voor u</span>.</h1>
+    <p class="lead">SMart helpt ondernemers en bedrijven om vindbaar, vertrouwd en professioneel online te staan. Heldere websites, scherpe teksten, betere vindbaarheid — wij regelen het, u doet uw vak.</p>
+    <div class="btns">
+      <a href="#contact" class="btn btn-primary">Plan een kennismaking</a>
+      <a href="#diensten" class="btn btn-ghost">Bekijk diensten</a>
+    </div>
+    <div class="hero-meta">
+      <div><b>~2 weken</b>van briefing tot live</div>
+      <div><b>Vaste prijs</b>vooraf bekend</div>
+      <div><b>1 contact</b>persoonlijk en bereikbaar</div>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="diensten">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Diensten</span>
+      <h2>Alles voor een sterke <span class="em">online basis</span></h2>
+      <p>Van nul beginnen of opfrissen — wij pakken het van A tot Z aan. Eén aanspreekpunt, helder pakket.</p>
+    </div>
+    <div class="bento reveal">
+
+      <div class="b-card dark b-1">
+        <span class="tag mono">01 · meest gevraagd</span>
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></div>
+        <h3>Websites op maat</h3>
+        <p>Een nette, snelle en mobielvriendelijke website die bij uw bedrijf past en bezoekers omzet in aanvragen.</p>
+        <span class="pill" style="color:#8ab4e6">Meer over websites</span>
+      </div>
+
+      <div class="b-card b-2">
+        <span class="tag mono">02</span>
+        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+        <h3>Online vindbaarheid</h3>
+        <p>Beter gevonden worden op Google. Bedrijfsprofiel, lokale SEO en reviewstrategie netjes ingericht.</p>
+        <span class="pill">SEO & Google</span>
+      </div>
+
+      <div class="b-card b-3">
+        <span class="tag mono">03</span>
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 8h16"/><path d="M8 4v16"/></svg></div>
+        <h3>Teksten die werken</h3>
+        <p>Heldere, professionele teksten. Geen wollig gepraat — gewoon wat uw klant moet weten.</p>
+      </div>
+
+      <div class="b-card b-4">
+        <span class="tag mono">04</span>
+        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>Onderhoud & beheer</h3>
+        <p>Hosting, updates en wijzigingen op verzoek. Vaste lage maandprijs, zonder verrassingen.</p>
+      </div>
+
+      <div class="b-card b-5">
+        <span class="tag mono">05</span>
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <h3>Advies & sparren</h3>
+        <p>Niet zeker wat u nodig hebt? Eerlijk advies, concreet stappenplan. Geen verkooppraatje.</p>
+      </div>
+
+      <div class="b-card b-6">
+        <span class="tag mono">06 · maatwerk</span>
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg></div>
+        <h3>Iets specifieks?</h3>
+        <p>Online formulier, prijslijst, digitale brochure, productpagina, automatisering — als het online kan, denken we mee.</p>
+        <span class="pill">In overleg</span>
+      </div>
+
+      <div class="b-card b-7" style="background:linear-gradient(135deg,#e8eef7 0%,#dbe7f5 100%);border-color:rgba(43,108,176,.18);">
+        <span class="tag mono">↗ start hier</span>
+        <div class="ic" style="background:#fff;"><svg viewBox="0 0 24 24" style="stroke:#1e4d8c"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></div>
+        <h3>Niet zeker waar te beginnen?</h3>
+        <p>Begin met een vrijblijvend kennismakingsgesprek. We kijken samen waar de grootste winst zit voor uw situatie — zonder verplichtingen.</p>
+        <a href="#contact" class="pill">Plan een gesprek</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="approach" id="aanpak">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Aanpak</span>
+      <h2>Helder, persoonlijk, <span class="em">zonder gedoe</span></h2>
+      <p>Vier stappen, vaste afspraken. U weet steeds waar we staan.</p>
+    </div>
+    <div class="timeline reveal">
+      <div class="step">
+        <div class="circle">01</div>
+        <h4>Kennismaken</h4>
+        <p>We luisteren naar uw bedrijf en wat u wilt bereiken. Vrijblijvend, geen verplichtingen.</p>
+      </div>
+      <div class="step">
+        <div class="circle">02</div>
+        <h4>Voorstel & prijs</h4>
+        <p>Helder voorstel met vaste prijs vooraf. Geen verrassingen, geen verborgen kosten.</p>
+      </div>
+      <div class="step">
+        <div class="circle">03</div>
+        <h4>Bouwen</h4>
+        <p>Wij gaan aan de slag. U krijgt het tussenresultaat te zien en mag bijsturen tot het past.</p>
+      </div>
+      <div class="step">
+        <div class="circle">04</div>
+        <h4>Live & bereikbaar</h4>
+        <p>Site online, formulier werkend, uitleg erbij. Daarna blijven we bereikbaar voor wat u nodig hebt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why" id="waarom">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Waarom SMart</span>
+      <h2>Vertrouwd, eerlijk, <span class="em">en gewoon goed</span></h2>
+      <p>Geen ingewikkelde abonnementen, geen jargon, geen verkooppraatjes.</p>
+    </div>
+    <div class="why-grid reveal">
+      <div class="why-item">
+        <div class="num mono">/ 01</div>
+        <h4>Eerlijke prijs vooraf</h4>
+        <p>U weet vooraf wat het kost. Vaste prijs per project, geen uurtje-factuurtje.</p>
+      </div>
+      <div class="why-item">
+        <div class="num mono">/ 02</div>
+        <h4>Korte lijnen</h4>
+        <p>Eén vast aanspreekpunt. Geen tussenpersonen, geen wachttijden.</p>
+      </div>
+      <div class="why-item">
+        <div class="num mono">/ 03</div>
+        <h4>Begrijpelijke taal</h4>
+        <p>Geen technische termen. Alles in normale taal, zonder poespas.</p>
+      </div>
+      <div class="why-item">
+        <div class="num mono">/ 04</div>
+        <h4>Voor u, met u</h4>
+        <p>Het wordt úw website, úw uitstraling. Wij bouwen, u beslist mee.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section" id="contact">
+  <div class="wrap">
+    <div class="c-grid">
+      <div class="reveal">
+        <span class="eyebrow" style="display:inline-block;color:var(--brand);font-weight:600;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;padding:5px 12px;background:var(--brand-soft);border-radius:6px;">Contact</span>
+        <h2 style="margin-top:18px;">Klaar voor een <span class="em">sterkere</span> online aanwezigheid?</h2>
+        <p class="lead">Vertel kort wat u in gedachten heeft. We nemen contact op voor een vrijblijvend kennismakingsgesprek — geen verkooppraatje, beloofd.</p>
+        <ul class="c-info">
+          <li><span class="ic">☎</span><div><small>Telefoon</small><b class="placeholder" title="In te vullen">06 - 00 00 00 00</b></div></li>
+          <li><span class="ic">✉</span><div><small>E-mail</small><b class="placeholder" title="In te vullen">info@smart-online.nl</b></div></li>
+          <li><span class="ic">⌂</span><div><small>Werkgebied</small><b>Heel Nederland (op afspraak)</b></div></li>
+        </ul>
+      </div>
+      <div class="form reveal">
+        <label>Naam</label>
+        <input type="text" placeholder="Uw naam">
+        <label>Bedrijf</label>
+        <input type="text" placeholder="Naam van uw bedrijf">
+        <label>Telefoon of e-mail</label>
+        <input type="text" placeholder="Zodat we contact kunnen opnemen">
+        <label>Waar kunnen we mee helpen?</label>
+        <select>
+          <option>Een nieuwe website</option>
+          <option>Bestaande site verbeteren</option>
+          <option>Beter vindbaar op Google</option>
+          <option>Teksten of content</option>
+          <option>Iets anders / nog niet zeker</option>
+        </select>
+        <label>Vertel kort uw situatie</label>
+        <textarea rows="3" placeholder="Een paar zinnen is genoeg..."></textarea>
+        <button type="button" onclick="alert('Dit is een demo-formulier. In de echte website komen aanvragen automatisch binnen via e-mail.');">Stuur aanvraag</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <div class="logo" style="margin-bottom:16px;">
+          <span class="mark">S</span>
+          <span><b>SMart</b><small>Online voor ondernemers</small></span>
+        </div>
+        <p style="font-size:.92rem;max-width:38ch;color:#a8b3c4;">Een professionele online aanwezigheid, zonder gedoe. Voor ondernemers die liever bezig zijn met hun vak dan met hun website.</p>
+      </div>
+      <div>
+        <h5>Diensten</h5>
+        <ul>
+          <li><a href="#diensten">Websites op maat</a></li>
+          <li><a href="#diensten">Online vindbaarheid</a></li>
+          <li><a href="#diensten">Teksten & content</a></li>
+          <li><a href="#diensten">Onderhoud & beheer</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="#contact">Kennismaking plannen</a></li>
+          <li><span class="placeholder" title="In te vullen">06 - 00 00 00 00</span></li>
+          <li><span class="placeholder" title="In te vullen">info@smart-online.nl</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="bottom">
+      <p>© <span id="year"></span> SMart — Online voor ondernemers. Alle rechten voorbehouden.</p>
+      <p style="margin-top:6px;font-size:.78rem;opacity:.7;">Voorbeeld-ontwerp — contactgegevens en KvK-nummer nog in te vullen.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  // Subtle reveal-on-scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+  }, { threshold: 0.12 });
+  reveals.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
